@@ -80,7 +80,7 @@ Here the mount point for each image is specified using a ":".
 
 {colorize("Note", "cyan")} - uenv must be mounted at the mount point for which they were built.
 If mounted at the wrong location, a warning message will be printed, and
-features like views and modules wiil be disabled.
+features like views and modules will be disabled.
 
 {colorize("Example", "blue")} - the run command can be used to execute workflow steps with
 separate environments:
@@ -122,7 +122,7 @@ Here the mount point for each image is specified using a ":".
 
 {colorize("Note", "cyan")} - uenv must be mounted at the mount point for which they were built.
 If mounted at the wrong location, a warning message will be printed, and
-features like views and modules wiil be disabled.
+features like views and modules will be disabled.
 """
                  ))
     start_parser.add_argument("-a", "--uarch",
