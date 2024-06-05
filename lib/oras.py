@@ -30,11 +30,13 @@ def run_command(args, detach=False):
         command = [find_oras()] + args
 
         terminal.info(f"calling oras: {' '.join(command)}")
+
         if detach:
             process = subprocess.Popen(
                 command,
                 stdout=subprocess.PIPE,  # Capture standard output
                 stderr=subprocess.PIPE,  # Capture standard error
+                check=True,  # Raise exception if command fails
                 encoding='utf-8'  # Decode output from bytes to string
             )
             return process
@@ -49,11 +51,15 @@ def run_command(args, detach=False):
             )
 
             # Print standard output
-            terminal.info("Output:\n{result.stdout}")
+            terminal.info(f"oras output: {result.stdout}")
 
             return None
-
+          
     except subprocess.CalledProcessError as e:
         # Print error message along with captured standard error
-        terminal.error("An error occurred:\n", e.stderr)
+        err_msg = e.stderr
+        if "client does not have permission for manifest" in err_msg:
+            terminal.error(f"an error occured with the oras client: {e.stderr}\n{terminal.colorize('Hint', 'yellow')} check that you have permissions to pull from the target JFrog registry, or contact CSCS Service Desk with the full command and output (preferrably also with the --verbose flag).")
+        terminal.error(f"an error occured with the oras client: {e.stderr}")
+
 
