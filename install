@@ -167,7 +167,7 @@ else
 fi
 
 echo "installing $lib_path"
-run install -v -m755 -d "$lib_path"
+run install -v -m755 -d "${destdir}/$lib_path"
 run install -v -m644 -D -t "${destdir}/${lib_path}" ${script_path}/lib/alps.py
 run install -v -m644 -D -t "${destdir}/${lib_path}" ${script_path}/lib/datastore.py
 run install -v -m644 -D -t "${destdir}/${lib_path}" ${script_path}/lib/envvars.py
