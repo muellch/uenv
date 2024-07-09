@@ -207,11 +207,11 @@ run install -v -m755 -D "${oras_path}/oras" "${destdir}/${oras_exe_path}"
 echo "installing $init_path"
 run install -v -m644 -D <(
     sed \
-        -e "s|@@impl@@|$impl_path|g"  \
+        -e "s|@@impl@@|${destdir}/$impl_path|g"  \
         -e "s|@@version@@|$version|g" \
         -e "s|@@prefix@@|$prefix|g"   \
-        -e "s|@@image_impl@@|$img_impl_path|g" \
-        -e "s|@@wrapper@@|$wrapper_path|g" \
+        -e "s|@@image_impl@@|${destdir}/$img_impl_path|g" \
+        -e "s|@@wrapper@@|${destdir}/$wrapper_path|g" \
         $script_path/activate) \
       $init_path
 
