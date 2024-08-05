@@ -215,6 +215,6 @@ run install -v -m644 -D <(
         $script_path/activate) \
       $init_path
 
-if [[ "$local_install" == "yes" ]]; then
-    prompt_bash_update "$prefix" "$always_yes"
-fi
+#if [[ "$local_install" == "yes" ]]; then
+#    prompt_bash_update "$prefix" "$always_yes"
+#fi
