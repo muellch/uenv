@@ -27,50 +27,27 @@ detect_oras_arch() {
 
 function usage {
     echo "uenv installer"
-    echo "Usage: install [--prefix=] [--yes] [--help]"
+    echo "Usage: install [--prefix=] [--help]"
     echo ""
-    echo "--prefix  : the installation path (default /opt/uenv)"
-    echo "--local   : install locally for this user (default prefix \$HOME/.local)"
-    echo "--yes     : default response to all queries is yes"
-    echo "--help    : print this message"
-    echo "--arch    : force installing for a specific arch: x86_64 or aarch64"
+    echo "--prefix          : the installation path (default /opt/uenv)"
+    echo "--local           : install locally for this user (default prefix \$HOME/.local)"
+    echo "--no-bashrc-edit  : do not put activation code into bashrc"
+    echo "--help            : print this message"
+    echo "--arch            : force installing for a specific arch: x86_64 or aarch64"
 }
 
-function prompt_bash_update {
+function bash_update {
     prefix=$1
-    always_yes=$2
 
     activate_script=$prefix/bin/activate-uenv
 
-    response="yes"
-    if [ "$always_yes" != "yes" ]
-    then
-        # prompt the user
-        echo
-        read -p "Do you want to update $HOME/.bashrc to load uenv? [y/N] " response
+    # change the .bashrc
+    echo "" >> $HOME/.bashrc
+    echo "# configure the user-environment (uenv) utility" >> $HOME/.bashrc
+    echo "source ${activate_script}" >> $HOME/.bashrc
 
-        # default to No if no input
-        response=${response:-N}
-    fi
-
-    # check the user's response
-    case $response in
-        [yY][eE][sS]|[yY])
-            # if yes, create the directory
-            echo "" >> $HOME/.bashrc
-            echo "# configure the user-environment (uenv) utility" >> $HOME/.bashrc
-            echo "source ${activate_script}" >> $HOME/.bashrc
-
-            echo
-            echo "$HOME/.bashrc has been updated."
-            ;;
-        *)
-            # if anything other than yes, do nothing
-            echo
-            echo "$HOME/.bashrc is unmodified - you can update it yourself:"
-            echo "echo \"source ${activate_script}\" >> $HOME/.bashrc"
-            ;;
-    esac
+    echo
+    echo "$HOME/.bashrc has been updated."
 }
 
 # set the default installation location
@@ -80,11 +57,11 @@ prefix_system="/opt"
 # get number of arguments
 arg_count=$#
 
-# default is to always query user for yes/no prompts
-always_yes=no
-
 # default install system wide
 local_install=no
+
+# add activation line to .bashrc for local install
+bashrc_edit=yes
 
 # Set the architecture of the system we are installing on.
 # Required when building RPMs on a system with a different arch
@@ -110,8 +87,8 @@ do
         --local)
         local_install=yes
         ;;
-        --yes)
-        always_yes=yes
+        --no-bashrc-edit)
+        bashrc_edit=no
         ;;
         --destdir=*)
         destdir="${arg#*=}"
@@ -216,5 +193,7 @@ run install -v -m644 -D <(
       $init_path
 
 if [[ "$local_install" == "yes" ]]; then
-    prompt_bash_update "$prefix" "$always_yes"
+    if [[ "$bashrc_edit" == "yes" ]]; then
+        bash_update "$prefix"
+    fi
 fi
